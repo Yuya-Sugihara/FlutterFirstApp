@@ -4,6 +4,6 @@ import 'qiitaApp.dart';
 
 //  エントリポイント
 void main() {
-  debugPaintSizeEnabled = true;
+  //debugPaintSizeEnabled = true;
   runApp(MaterialApp(home: QiitaApp()));
 }

@@ -12,9 +12,9 @@ class TabInfo {
 
 class QiitaApp extends StatelessWidget {
   final List<TabInfo> _tabs = [
+    TabInfo("全ての投稿", AllArticlePage()),
     TabInfo("注目の投稿", FocusedArticlePage()),
     TabInfo("人気の投稿", PopularArticlePage()),
-    TabInfo("全ての投稿", AllArticlePage())
   ];
 
   @override
