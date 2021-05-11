@@ -1,0 +1,327 @@
+
+Flutterメモ
+
+ウィジェット群
+•Container
+子ウィジェットをカスタマイズするためのウィジェット
+ex) 図形描画
+
+•AnimatedContainer
+アニメーションを行うContainer
+ body: AnimatedContainer(
+        width: _width,
+        height: 100,
+        duration: Duration(seconds: 1),
+        color: Colors.orange,
+      ),
+
+•ListView
+直線的にスクロール可能に配置するウィジェット
+
+作成方法
+1. デフォルトコンストラクタで要素をもらう
+→要素が固定されるため、読み込み等を行って無限にスクロールするような表示には向いていない
+-→固定長の設定画面など
+Widget build(BuildContext context) {
+    const data = [
+      Text("item0"),Text("item1"),Text("item2"),Text("item3"),Text("item4"),
+    ];
+    return MaterialApp(
+      home: Scaffold(
+        body: ListView(
+          children: data
+        ),
+      ),
+    );
+  }
+
+2. ListView.builder()を呼び出して要素を動的生成
+→要素数が分からない時に使える
+Widget build(BuildContext context) {
+    var list = ["メッセージ", "メッセージ", "メッセージ", "メッセージ", "メッセージ",];
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('ListView'),
+        ),
+        body: ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            if (index >= list.length) {
+              list.addAll(["メッセージ","メッセージ","メッセージ","メッセージ",]);
+            }
+            return _messageItem(list[index]);
+          },
+        )
+      )
+    );
+
+
+スクロール方向の変更
+body: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                if (index >= list.length) {
+                  list.addAll(["0","1","2","3","4","5","6","7","8","9",]);
+                }
+                return _messageItem(list[index]);
+              },
+            )
+
+
+•Stack
+ウィジェットを上に重ねることができる
+
+return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+              title: Text('Stack'),
+            ),
+            body: Stack(
+              children: <Widget>[
+                Container(
+                  width: 100,
+                  height: 100,
+                  color:Colors.green
+                ),
+                Container(
+                  width: 50,
+                  height: 80,
+                  color: Colors.orange,
+                )
+              ],
+            )
+        )
+    );
+
+•StateFulWidget
+状態を持つWidget
+変数値などを持ち、その変数値によって画像の色を動的に変更できたりする
+createState()メソッドで、Stateクラスを継承したクラスを生成する
+状態を保持する変数を変更する際は、setState()メソッドで変更する
+
+ボタン入力
+•Flatbutton
+普通のボタン
+コールバックメソッドの設定ができる
+class ChangeForm extends StatefulWidget {
+  @override
+  _ChangeFormState createState() => _ChangeFormState();
+}
+
+class _ChangeFormState extends State<ChangeForm> {
+  int _count = 0;
+
+  void _handlePressed() {
+    setState(() {
+      _count++;
+    });
+  }
+
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(50.0),
+      child: Column(
+        children: <Widget>[
+          Text(
+            "$_count",
+            style: TextStyle(
+              color:Colors.blueAccent,
+              fontSize: 30.0,
+              fontWeight: FontWeight.w500
+            ),
+          ),
+          FlatButton(
+            onPressed: _handlePressed,
+            color: Colors.blue,
+            child: Text(
+              '更新',
+              style: TextStyle(
+                color:Colors.white,
+                fontSize: 20.0
+              ),
+            ),
+          )
+        ],
+      )
+    );
+  }
+}
+
+Shapeプロパティを変更することで形を変更できる
+FlatButton(
+  onPressed: _handlePressed,
+  color: Colors.blue,
+  shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20.0)
+  ),
+
+•RaisedButton
+立体的なボタンを表示する
+押されている時に立体的になることでボタンの描画が変わる
+
+•IconButton
+ボタンアイコンを指定できるボタン
+IconButton(
+  iconSize: 100,
+  onPressed: _handlePressed,
+  color: Colors.blue,
+  icon: Icon(Icons.add_circle_outline),
+)
+
+•PopupMenuButton
+ボタンが押されることで、メニュー表示がされるボタン
+選択範囲の中で選ばせたい時などに使える
+
+テキスト入力
+•TextField
+普通の文字入力ができるウィジェット
+new TextField(
+  enabled: true,
+  // 入力数
+  maxLength: 10,
+  maxLengthEnforced: false,
+  style: TextStyle(color: Colors.black),
+  obscureText: false,
+  maxLines:1 ,
+  decoration: const InputDecoration(
+    icon: Icon(Icons.face),
+    hintText: 'お名前を教えてください',
+    labelText: '名前 *',
+  ),
+  //パスワード
+  onChanged: _handleText,
+),
+
+ナビゲーション
+•AppBar
+アプリのヘッダー部分を表示するウィジェット
+設定や横にメニュー画面表示などヘッダーにボタンを載せられる
+appBar: AppBar(
+          leading: Icon(Icons.menu),
+          title: const Text('AppBar'),
+          backgroundColor: Colors.orange,
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.face, color: Colors.white,),
+            ),
+            IconButton(
+              icon: Icon(Icons.email, color: Colors.white,),
+            ),
+            IconButton(
+              icon: Icon(Icons.favorite, color: Colors.white,),
+            ),
+          ],
+        ),
+      ),
+
+
+•BottomNavigationBar
+アプリ画面下側にナビゲーションメニューを表示できる
+アプリのモード変更などに使用できる
+bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
+          BottomNavigationBarItem(icon: Icon(Icons.photo_album), title: Text('Album')),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), title: Text('Chat')),
+        ],
+        currentIndex: _currentIndex,
+        fixedColor: Colors.blueAccent,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+      ),
+    );
+
+
+画面遷移
+画面はスタック方式でどんどんオーバーレイされていく
+
+•ルートのbuild()で、画面遷移先の情報を保持
+routes: <String, WidgetBuilder> {
+        '/home': (BuildContext context) => new MainPage(),
+        '/subpage': (BuildContext context) => new SubPage()
+      },
+
+•画面遷移元で下記のようなコードを呼び出す
+RaisedButton(onPressed: () => Navigator.of(context).pushNamed("/subpage"), child: new Text('Subページへ'),)
+
+•画面遷移元に戻す時は下記のようなコードを呼び出す
+RaisedButton(onPressed: () => Navigator.of(context).pop(), child: new Text('戻る'),)
+
+•画面遷移元へ戻れない画面遷移
+RaisedButton(onPressed: () => Navigator.of(context).pushReplacementNamed("/subpage"), child: new Text('Subページへ'),)
+
+各設定
+•色の指定
+1. 数値指定
+Color(0xFF42A5F5)
+Color.fromARGB(0xFF, 0x42, 0xA5, 0xF5)
+Color.fromARGB(255, 66, 165, 245)
+Color.fromRGBO(66, 165, 245, 1.0)
+
+2. 列挙体指定
+Colors.green
+Colors.blue
+Colors.red
+
+•パディング設定
+領域の内側の余白を空けること
+１つのウィジェットの見方を調整できる
+
+1. 全方向パディング
+padding: const EdgeInsets.all(50.0)
+
+2. 指定方向パディング
+padding: const EdgeInsets.only(top:50.0)
+
+•マージン設定
+領域の外側の余白を空けること
+隣接するウィジェットとの間を調整したい時に使う
+
+1. 全方向マージン
+margin: const EdgeInsets.all(100.0),
+
+2. 指定方向マージン
+margin: const EdgeInsets.only(left:50.0),
+
+•文字表示の揃え
+alignment: Alignment.center
+
+•Translation,Rotation,Scaleの調整
+transform: Matrix4.rotationZ(0.1)
+
+•ウィジェットの並び設定
+1. 横並び
+child: Row(
+  children: <Widget>[
+    Container( color: Colors.blue, width: 100, height:100 ),
+    Container( color: Colors.red, width: 100, height:100 ),
+  ],
+),
+
+2. 縦並び
+child: Column(
+    children: <Widget>[
+      Container( color: Colors.blue, width: 100, height:100 ),
+      Container( color: Colors.red, width: 100, height:100 ),
+    ],
+  ),
+
+3. 入れ子
+child: Row(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            Container( color: Colors.blue, width: 100, height:100 ),
+            Container( color: Colors.red, width: 100, height:100 ),
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            Container( color: Colors.green, width: 100, height:100 ),
+            Container( color: Colors.orange, width: 100, height:100 ),
+          ],
+        ),
+      ],
+    ),
+
